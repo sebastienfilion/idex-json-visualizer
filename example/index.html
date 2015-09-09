@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IDEX JSON Visualizer - Example</title>
+
+    <!-- Vendors scripts -->
+    <script type="application/javascript" src="../idex-json-visualizer/vendors/angular/angular.js"></script>
+
+    <!-- Example scripts -->
+    <script type="application/javascript" src="application.controller.js"></script>
+
+    <!-- JSON Visualizer scripts -->
+    <script type="application/javascript" src="../idex-json-visualizer/application.js"></script>
+    <script type="application/javascript" src="../idex-json-visualizer/json-visualizer/json-visualizer.directive.js"></script>
+    <script type="application/javascript" src="../idex-json-visualizer/json-visualizer/json-visualizer.factory.js"></script>
+
+</head>
+<body ng-app="application" ng-controller="ApplicationController as applicationController">
+
+<h1>Simple model WITHOUT a blueprint</h1>
+<div idex-json-visualizer="applicationController.simpleModel" idex-form-name="User"></div>
+
+<h1>Simple model WITH a blueprint</h1>
+<div idex-json-visualizer="applicationController.simpleModel2" idex-blueprint="applicationController.simpleBlueprint" idex-form-name="User2"></div>
+
+</body>
+</html>
