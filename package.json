@@ -2,5 +2,15 @@
     "name": "idex-json-visualizer",
     "version": "1.0.0",
     "dependencies": {
+        "event-stream": "latest",
+        "gulp": "latest",
+        "gulp-angular-templatecache": "latest",
+        "gulp-concat": "latest",
+        "gulp-debug": "latest",
+        "gulp-flatten": "latest",
+        "gulp-order": "latest",
+        "gulp-uglify": "latest",
+        "run-sequence": "latest",
+        "yargs": "latest"
     }
 }

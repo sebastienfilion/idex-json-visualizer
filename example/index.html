@@ -6,23 +6,25 @@
 
     <!-- Vendors scripts -->
     <script type="application/javascript" src="../idex-json-visualizer/vendors/angular/angular.js"></script>
+    <script type="application/javascript" src="../idex-json-visualizer/vendors/angular-sanitize/angular-sanitize.js"></script>
+
+    <!-- JSON Visualizer scripts -->
+    <script type="application/javascript" src="../idex-json-visualizer.js"></script>
 
     <!-- Example scripts -->
     <script type="application/javascript" src="application.controller.js"></script>
-
-    <!-- JSON Visualizer scripts -->
-    <script type="application/javascript" src="../idex-json-visualizer/application.js"></script>
-    <script type="application/javascript" src="../idex-json-visualizer/json-visualizer/json-visualizer.directive.js"></script>
-    <script type="application/javascript" src="../idex-json-visualizer/json-visualizer/json-visualizer.factory.js"></script>
-
 </head>
 <body ng-app="application" ng-controller="ApplicationController as applicationController">
 
 <h1>Simple model WITHOUT a blueprint</h1>
-<div idex-json-visualizer="applicationController.simpleModel" idex-form-name="User"></div>
+<div idex-json-visualizer="applicationController.simpleModel" idex-form-name="applicationController.User"></div>
+
+<pre>{{ applicationController.simpleModel | json }}</pre>
 
 <h1>Simple model WITH a blueprint</h1>
-<div idex-json-visualizer="applicationController.simpleModel2" idex-blueprint="applicationController.simpleBlueprint" idex-form-name="User2"></div>
+<div idex-json-visualizer="applicationController.simpleModel2" idex-blueprint="applicationController.simpleBlueprint" idex-form-name="applicationController.User2"></div>
+
+<pre>{{ applicationController.simpleModel2 | json }}</pre>
 
 </body>
 </html>

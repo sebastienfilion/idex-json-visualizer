@@ -1,0 +1,73 @@
+
+<div class="json-visualizer">
+
+    <div class="json-visualizer__items">
+
+        <div class="json-visualizer__items__item" ng-repeat="settings in ::blueprint | orderByWeight">
+
+            <div ng-switch="settings.widgetType">
+
+                <div ng-switch-when="text" ng-if="settings.visible">
+
+                    <label for="{{ settings.key }}">
+                        <div class="label">{{ settings.label }}</div>
+                        <input id="{{ settings.key }}"
+                               name="{{ settings.key }}"
+                               type="text" ng-if="settings.editable"
+                               ng-required="settings.required"
+                               ng-pattern="settings.regexp"
+                               idex-model="modelName + '.' + settings.key" />
+                        <div class="body" ng-if="!settings.editable"
+                             idex-bind="(modelName + '.' + settings.key | date : 'fullDate')"></div>
+                    </label>
+
+                </div>
+
+                <div ng-switch-when="fieldset">
+
+                    <fieldset class="fieldset">
+
+                        <legend class="legend">{{ settings.label }}</legend>
+
+                        <div idex-json-visualizer="modelName + '.' + settings.key" idex-blueprint="settings.children"></div>
+
+                    </fieldset>
+                </div>
+
+                <div ng-switch-when="idex-multi-choice">
+
+                    <label for="{{ settings.key }}">
+                        <div class="label">{{ settings.label }}</div>
+                        <div idex-multi-choice="modelName + '.' + settings.key" idex-blueprint="settings"></div>
+                    </label>
+
+                </div>
+
+                <div ng-switch-when="checkbox">
+
+                    <label>
+                        <div class="label">{{ settings.label }}</div>
+                        <div idex-checkbox="modelName + '.' + settings.key" idex-blueprint="settings"></div>
+                    </label>
+
+                </div>
+
+                <div ng-switch-when="radio">
+
+                    <label>
+                        <div class="label">{{ settings.label }}</div>
+
+                        <label for="{{ settings.key }}__{{ $index }}" ng-repeat="option in settings.widgetOptions">
+                            <input id="{{ settings.key }}__{{ $index }}" name="{{ settings.key }}__{{ $index }}" type="radio" ng-value="option.value" idex-model="modelName + '.' + settings.key" />&nbsp;<div class="label">{{ option.label }}</div>
+                        </label>
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

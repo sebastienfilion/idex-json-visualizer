@@ -1,0 +1,8 @@
+<div class="checkbox">
+    <div class="checkbox__elements">
+        <div class="checkbox__element" ng-repeat="option in settings.widgetOptions track by $index">
+            <input id="{{ settings.key }}__{{ $index }}" name="{{ settings.key }}__{{ $index }}" type="checkbox" class="checkbox" ng-checked="model.indexOf(option.value) !== -1" ng-click="change(model, option.value)"/>&nbsp;<div class="label">{{ option.label }}</div>
+        </div>
+    </div>
+</div>
+

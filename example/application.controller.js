@@ -6,6 +6,8 @@
 
     .controller('ApplicationController', ApplicationController);
 
+  ApplicationController.$inject = [];
+
   function ApplicationController () {
     var view = this;
 
@@ -34,7 +36,8 @@
         firstName: 'John',
         fullName: 'John Doe',
         email: 'john@gmail.com'
-      }
+      },
+      active: true
     };
 
     view.simpleBlueprint = {
@@ -46,6 +49,7 @@
         type: 'array',
         required: true,
         weight: -500,
+        widgetType: 'checkbox',
         widgetOptions: [
           {
             type: 'string',
@@ -82,23 +86,46 @@
         label: 'Personal information',
         children: {
           firstName: {
-            type: 'string'
+            type: 'string',
+            required: true
           },
           fullName: {
-            type: 'string'
+            type: 'string',
+            required: true
           },
           email: {
             type: 'string',
             label: 'E-mail',
-            regexp: '[A-Za-z0-9\.\-\_\+]+\@[A-Za-z0-9\.\-\_]+\.[A-Za-z\.]{2,7}$'
+            regexp: '[A-Za-z0-9\.\-\_\+]+\@[A-Za-z0-9\.\-\_]+\.[A-Za-z\.]{2,7}$',
+            required: true,
+            weight: -500
           },
           city: {
             type: 'string',
-            label: 'City'
+            label: 'City',
+            weight: -900
           }
         }
+      },
+      active: {
+        type: 'boolean',
+        label: 'User is active',
+        weight: -900,
+        widgetType: 'radio',
+        widgetOptions: [
+          {
+            type: 'boolean',
+            label: 'Active',
+            value: true
+          },
+          {
+            type: 'boolean',
+            label: 'Inactive',
+            value: false
+          }
+        ]
       }
-    }
+    };
   }
 
 })(window, window.angular);

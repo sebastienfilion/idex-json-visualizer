@@ -1,0 +1,13 @@
+<div class="multi-choice">
+    <div class="multi-choice__elements">
+        <div class="multi-choice__element" ng-repeat="value in model track by $index">
+            <input type="text" class="input" ng-required="blueprint.required" ng-pattern="blueprint.regexp" idex-model="modelName + '[' + $index + ']'"/>
+            <button class="button" ng-click="remove(modelName, $index)">Remove</button>
+        </div>
+    </div>
+    <div class="multi-choice__controls">
+        <input type="text" class="input" ng-model="dummyValue"/>
+        <button class="button" ng-click="add(modelName, dummyValue); dummyValue = ''">Add value</button>
+    </div>
+</div>
+

@@ -10,7 +10,8 @@
     var factory = {};
 
     factory.converToBlueprint = convertJSONToBlueprint;
-    factory.convertToHTML = convertJSONToHTML;
+    factory.normalizeBlueprint = normalizeJSONBlueprint;
+    //factory.convertToHTML = convertJSONToHTML;
 
     return factory;
 
@@ -50,7 +51,11 @@
             widgetOptions: value
               .map(function (widgetOption) {
 
-                return parse(key, widgetOption);
+                return {
+                  type: 'string',
+                  label: widgetOption.cleanUpLabel(),
+                  value: widgetOption
+                };
               })
           }
         }
@@ -59,167 +64,49 @@
       }
     }
 
-    function convertJSONToHTML (blueprint, modelName, formName) {
-      var formElement = $window.document.createElement('form');
+    function normalizeJSONBlueprint (blueprint) {
 
-      if (!!formName) formElement.name = formName;
+      return normalize(blueprint);
 
-      return execute(blueprint, formElement);
+      function normalize (currentBlueprint) {
+        if (!currentBlueprint) return currentBlueprint;
 
-      function execute (currentBlueprint, currentElement) {
+        Object.keys(currentBlueprint)
+          .forEach(function (currentBluePrintKey) {
 
-        return Object.keys(currentBlueprint)
-          .sort(function (keyA, keyB) {
-            var blueprintSettingsA = currentBlueprint[keyA],
-              blueprintBSettingsB = currentBlueprint[keyB];
-
-            blueprintSettingsA.weight = blueprintSettingsA.weight || 0;
-            blueprintBSettingsB.weight = blueprintBSettingsB.weight || 0;
-
-            if (blueprintSettingsA.weight > blueprintBSettingsB.weight) return -1;
-            else if (blueprintSettingsA.weight < blueprintBSettingsB.weight) return 1;
-            else return 0;
-          })
-          .reduce(function (accumulator, key) {
-            var blueprintSettings = currentBlueprint[key];
-
-            blueprintSettings.visible =  (blueprintSettings.hasOwnProperty('visible')) ? blueprintSettings.visible : true;
-            blueprintSettings.editable =  (blueprintSettings.hasOwnProperty('editable')) ? blueprintSettings.editable : true;
-
-            if (!!blueprintSettings.visible) {
-              if (blueprintSettings.type === 'string') {
-                if (blueprintSettings.editable) {
-                  accumulator.appendChild(generateTemplateForString(key, blueprintSettings));
-                } else {
-                  accumulator.appendChild(generateTemplateNonEditableForString(key, blueprintSettings));
-                }
-              }
-              if (blueprintSettings.type === 'array') accumulator.appendChild(generateTemplateForArray(key, blueprintSettings));
-              if (blueprintSettings.type === 'object') accumulator.appendChild(generateTemplateForObject(key, blueprintSettings));
-            }
-
-            return accumulator;
-          }, currentElement);
-      }
-
-      /**
-       * Generates a template for a property which the value is of instance of String.
-       *
-       * @param {String} key
-       * @param {Object} blueprintSettings
-       *
-       * @returns {Element}
-       */
-      function generateTemplateForString (key, blueprintSettings) {
-        var labelElement = $window.document.createElement('label'),
-          divLabelElement = $window.document.createElement('div'),
-          inputElement = $window.document.createElement('input');
-
-        labelElement.for = key;
-
-        divLabelElement.className = 'label';
-        divLabelElement.innerText = blueprintSettings.label || key.cleanUpLabel();
-
-        inputElement.id = key;
-        inputElement.name = key;
-        inputElement.setAttribute('ng-model', modelName + '.' + key);
-
-        if (blueprintSettings.hasOwnProperty('regexp')) inputElement.setAttribute('ng-pattern', new RegExp(blueprintSettings.regexp));
-
-        if (blueprintSettings.hasOwnProperty('required') && blueprintSettings.required) inputElement.required = true;
-
-        labelElement.appendChild(divLabelElement);
-        labelElement.appendChild(inputElement);
-
-        return labelElement;
-      }
-
-      function generateTemplateNonEditableForString (key, blueprintSettings) {
-        var labelElement = $window.document.createElement('label'),
-          divLabelElement = $window.document.createElement('div'),
-          textElement = $window.document.createElement('p');
-
-        labelElement.for = key;
-
-        divLabelElement.className = 'label';
-        divLabelElement.innerText = blueprintSettings.label || key.cleanUpLabel();
-
-        textElement.className = 'body';
-        textElement.innerText = '{{ ' + modelName + '.' + key + ((blueprintSettings.hasOwnProperty('filter')) ? ' | ' + blueprintSettings.filter : '') +  ' }}';
-
-        labelElement.appendChild(divLabelElement);
-        labelElement.appendChild(textElement);
-
-        return labelElement;
-      }
-
-      /**
-       * Generates a template for a property which the value is of instance of Array.
-       *
-       * @param {String} key
-       * @param {Object} blueprintSettings
-       *
-       * @returns {Element}
-       */
-      function generateTemplateForArray (key, blueprintSettings) {
-        var labelElement = $window.document.createElement('label'),
-          divLabelElement = $window.document.createElement('div'),
-          divNgRepeat = $window.document.createElement('div'),
-          inputElement = $window.document.createElement('input');
-
-        divLabelElement.className = 'label';
-        divLabelElement.innerText = blueprintSettings.label || key.cleanUpLabel();
-
-        divNgRepeat.setAttribute('ng-repeat', 'model in ' + modelName + '.' + key);
-
-        inputElement.id = key;
-        inputElement.name = key;
-        inputElement.setAttribute('ng-model', 'model');
-
-        divNgRepeat.appendChild(inputElement);
-
-        labelElement.appendChild(divLabelElement);
-        labelElement.appendChild(divNgRepeat);
-
-        return labelElement;
-      }
-
-      /**
-       * Generates a template for a property which the value is of instance of Object.
-       * The generator will expect the blueprint to have a property of children. It will throw an error if not.
-       * The children will be processed recursively.
-       *
-       * @param {String} key
-       * @param {Object} blueprintSettings
-       *
-       * @returns {*}
-       */
-      function generateTemplateForObject (key, blueprintSettings) {
-        var fieldsetElement = $window.document.createElement('fieldset'),
-          legendElement = $window.document.createElement('legend');
-
-        if (!blueprintSettings.hasOwnProperty('children')) throw new Error("[idex-json-visualizer convertJSONToHTML] A blueprint of instance of Object must have a property of children.");
-
-        fieldsetElement.className = 'fieldset';
-
-        legendElement.className = 'legend';
-        legendElement.innerText = blueprintSettings.label || key.cleanUpLabel();
-
-        fieldsetElement.appendChild(legendElement);
-
-        Object.keys(blueprintSettings.children)
-          .forEach(function (childrenKey) {
-            var value = blueprintSettings.children[childrenKey];
-
-            value.label = value.label || childrenKey.cleanUpLabel();
-
-            blueprintSettings.children[key + '.' + childrenKey] = value;
-            delete blueprintSettings.children[childrenKey];
+            currentBlueprint[currentBluePrintKey] = execute(currentBluePrintKey, currentBlueprint[currentBluePrintKey]);
           });
 
-        return execute(blueprintSettings.children, fieldsetElement, key);
-      }
+        return currentBlueprint;
 
+        function execute (key, settings) {
+          var defaultSettings = {
+            key: key,
+            label: key.cleanUpLabel(),
+            required: false,
+            editable: true,
+            weight: 0,
+            widgetType: (function (type) {
+              switch (type) {
+                case 'string':
+
+                  return 'text';
+                case 'array':
+
+                  return 'idex-multi-choice';
+                case 'object':
+
+                  return 'fieldset';
+              }
+            })(settings.type),
+            visible: true
+          };
+
+          if (settings.hasOwnProperty('children')) settings.children = normalize(settings.children);
+
+          return angular.extend(defaultSettings, settings);
+        }
+      }
     }
   }
 
@@ -230,6 +117,8 @@
 
     if (this.length > 3) {
       value = value.replace(/([A-Z])/g, ' $1').toLowerCase();
+
+      value = value.replace('_', ' ');
 
       value = value.slice(0, 1).replace(/^./, function(str){ return str.toUpperCase(); }) + value.slice(1);
     }

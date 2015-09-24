@@ -1,7 +1,41 @@
 {
   "name": "idex-json-visualizer",
   "version": "1.0.0",
+  "description": "A tool that creates an admin UI from any JSON structure.",
+  "main": "./idex-json-visualizer.js",
+  "moduleType": [
+    "globals"
+  ],
   "dependencies": {
-    "angular": "~1.3.0"
-  }
+    "angular": "~1.3.0",
+    "angular-sanitize": "~1.3.0"
+  },
+  "authors": [
+    "Sebastien Filion <me@idesignexperiences.com>"
+  ],
+  "ignore": [
+    ".bowerrc",
+    ".gitignore",
+    "gulpfile.js",
+    "package.json",
+    ".idea/",
+    ".git/",
+    "idex-json-visualizer/",
+    "node_modules/",
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "idex-json-visualizer/vendors",
+    "test",
+    "tests"
+  ],
+  "keywords": [
+    "angular",
+    "json",
+    "admin",
+    "database",
+    "idex"
+  ],
+  "license": "GPL-2.0",
+  "homepage": "https://github.com/sebastienfilion/idex-json-visualizer"
 }
